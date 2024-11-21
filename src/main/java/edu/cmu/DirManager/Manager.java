@@ -2,23 +2,34 @@ package edu.cmu.DirManager;
 
 public class Manager {
     private DirOps dirOps;
-    
+
     /**
      * Creates a new directory at the specified path.
      *
      * @param path the path where the new directory should be created
-     * @return 0 if the directory creation was successful
-     *        -1 if the directory already exists,
-     *        -2 if the path is invalid
+     * @throws DirectoryExistsException if the directory already exists
+     * @throws InvalidPathException if the provided path is invalid
      */
-    public int newDirectory(String path) {
+    public void newDirectory(String path) throws DirectoryExistsException, InvalidPathException {
         if (dirOps.checkDirectoryExists(path)) {
-            return -1;
+            throw new DirectoryExistsException("Directory already exists: " + path);
         } else if (!dirOps.checkPathValid(path)) {
-            return -2;
+            throw new InvalidPathException("Invalid path: " + path);
         } else {
             dirOps.createDirectory(path);
-            return 0;
         }
+    }
+}
+
+// Custom exceptions
+class DirectoryExistsException extends Exception {
+    public DirectoryExistsException(String message) {
+        super(message);
+    }
+}
+
+class InvalidPathException extends Exception {
+    public InvalidPathException(String message) {
+        super(message);
     }
 }
